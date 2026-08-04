@@ -96,8 +96,5 @@
 - Composer
 - MySQL >= 8.0
 - Node.js & NPM (opsional)
-
-### 1. Clone Repository
-```bash
 git clone https://github.com/sheryn-alya/KKN_Website-UMKM-Desa-Barurejo.git
 cd KKN_Website-UMKM-Desa-Barurejo
