@@ -15,8 +15,8 @@
 
     <style>
         /* ============================================
-                           RESET - TANPA SCROLL
-                           ============================================ */
+           RESET - TANPA SCROLL
+           ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -34,8 +34,8 @@
         }
 
         /* ============================================
-                           MAP - PALING BAWAH
-                           ============================================ */
+           MAP - PALING BAWAH
+           ============================================ */
         #map {
             width: 100vw !important;
             height: 100vh !important;
@@ -46,8 +46,8 @@
         }
 
         /* ============================================
-                           NAVBAR - DI ATAS MAP
-                           ============================================ */
+           NAVBAR - DI ATAS MAP
+           ============================================ */
         .navbar-umkm,
         nav.navbar,
         .navbar,
@@ -57,8 +57,8 @@
         }
 
         /* ============================================
-                           KONTROL PETA - DI ATAS NAVBAR
-                           ============================================ */
+           KONTROL PETA - DI ATAS NAVBAR
+           ============================================ */
         .leaflet-control-container,
         .leaflet-control-container *,
         .leaflet-top,
@@ -85,8 +85,8 @@
         }
 
         /* ============================================
-                           SIDEBAR - PALING ATAS
-                           ============================================ */
+           SIDEBAR - PALING ATAS
+           ============================================ */
         .sidebar-toggle {
             position: fixed !important;
             top: 100px !important;
@@ -156,8 +156,8 @@
         }
 
         /* ============================================
-                           SIDEBAR CONTENT
-                           ============================================ */
+           SIDEBAR CONTENT
+           ============================================ */
         .map-sidebar h4 {
             color: #1E5E0C;
             font-size: 0.95rem;
@@ -297,8 +297,8 @@
         }
 
         /* ============================================
-                           POPUP
-                           ============================================ */
+           POPUP
+           ============================================ */
         .popup-image {
             width: 100%;
             max-height: 150px;
@@ -382,8 +382,8 @@
         }
 
         /* ============================================
-                           MINI MAP FIX
-                           ============================================ */
+           MINI MAP FIX
+           ============================================ */
         .leaflet-control-minimap-toggle-display {
             background-image: none !important;
             background-color: #ffffff !important;
@@ -413,8 +413,8 @@
         }
 
         /* ============================================
-                           RESPONSIVE
-                           ============================================ */
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
             .sidebar-toggle {
                 top: auto !important;
@@ -1019,7 +1019,7 @@
         });
 
         // =============================================
-        // LOAD DATA UMKM - DIPERBAIKI
+        // LOAD DATA UMKM - HARDCODE DARI GEOJSON
         // =============================================
         var umkmLayer = L.geoJson(null, {
             pointToLayer: function(feature, latlng) {
@@ -1048,7 +1048,6 @@
             },
             onEachFeature: function(feature, layer) {
                 if (feature && feature.properties) {
-                    // Ambil dari properti yang benar (kapitalisasi)
                     var label = feature.properties.Name || feature.properties.nama || 'UMKM';
                     var alamat = feature.properties.alamat || feature.properties.Alamat || '-';
                     var kategori = feature.properties.Kategori || feature.properties.kategori || '-';
@@ -1059,7 +1058,6 @@
                     var coords = layer.getLatLng();
                     var googleMapsUrl = `https://www.google.com/maps?q=${coords.lat},${coords.lng}`;
 
-                    // Buat HTML foto jika ada dan bukan null
                     var imageHtml = '';
                     if (foto && foto !== '' && foto !== 'null') {
                         var imageUrl = getImageUrl(foto);
@@ -1082,55 +1080,212 @@
                     `;
                     layer.bindPopup(popupHtml);
                     layer.bindTooltip(label);
-                    layer.bindTooltip(label);
                 }
             }
         });
 
-        function loadLocalUmkmFile() {
-            fetch('{{ asset('public/geojson/merge_umkm_barurejo.geojson') }}')
-                .then(r => {
-                    if (!r.ok) throw new Error('File tidak ditemukan');
-                    return r.json();
-                })
-                .then(localData => {
-                    console.log('Loaded UMKM from file:', localData.features ? localData.features.length : 0);
-                    if (localData && localData.features && localData.features.length > 0) {
-                        umkmLayer.addData(localData);
-                        layerControl.addOverlay(umkmLayer, '📍 UMKM Barurejo');
-                        umkmLayer.addTo(map);
-                        updateSidebarStats(localData);
-                    } else {
-                        console.warn('File UMKM kosong, coba dari API');
-                        loadUmkmFromApi();
-                    }
-                })
-                .catch(err => {
-                    console.error('Gagal memuat file UMKM:', err);
-                    loadUmkmFromApi();
-                });
-        }
+        // =============================================
+        // DATA UMKM HARDCODE (14 UMKM)
+        // =============================================
+        var umkmData = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {
+                    "Name": "Kolam Pancing Banyumili",
+                    "Kategori": "Perikanan",
+                    "Produk": "Kolam pancing",
+                    "Dusun": "Krajan",
+                    "Foto": "Kolam Pancing Banyumili.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.113310520000027, -8.474798686999975]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Tiga bersaudara material",
+                    "Kategori": "Kerajinan",
+                    "Produk": "Batako",
+                    "Dusun": "Krajan",
+                    "Foto": "Tiga bersaudara material.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.117579604000071, -8.472011278999958]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Ud.Mela",
+                    "Kategori": "Kerajinan",
+                    "Produk": "Mebel",
+                    "Dusun": "Krajan",
+                    "Foto": "Ud.Mela.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.11903274000008, -8.476189709999971]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Warung tepi ladang (parno)",
+                    "Kategori": "Minuman",
+                    "Produk": "Cendol",
+                    "Dusun": "Krajan",
+                    "Foto": "Warung tepi ladang (parno).jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.105565498000033, -8.481255364999981]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Zha Craft Florist Hand Made",
+                    "Kategori": "Kerajinan",
+                    "Produk": "Bunga buatan",
+                    "Dusun": "Krajan",
+                    "Foto": "Zha Craft Florist Hand Made.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.114569841000048, -8.470250767999971]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Toko Bu Rohima",
+                    "Kategori": "Kelontong",
+                    "Produk": "Bahan pokok",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Bu Rohima.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.085828000000106, -8.449062]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Toko Bu Sumarti",
+                    "Kategori": "Kelontong",
+                    "Produk": "Barang rumahan",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Bu Sumarti.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.088237460000073, -8.449273790999939]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Toko Cahaya Tani Barurejo",
+                    "Kategori": "Pertanian",
+                    "Produk": "Alat dan obat pertanian",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Cahaya Tani Barurejo.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.09025882800006, -8.45364277799996]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Toko Dwi Jaya",
+                    "Kategori": "Kelontong",
+                    "Produk": "Barang rumahan",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Dwi Jaya.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.088659866000057, -8.443856227999959]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Toko Kelontong Mba Maryam",
+                    "Kategori": "Kelontong",
+                    "Produk": "Mainan dan Bahan pokok",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Kelontong Mba Maryam.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.089954119000026, -8.453531557999952]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Toko Madura Ayang Cindi",
+                    "Kategori": "Kelontong",
+                    "Produk": "Sembako",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Madura Ayang Cindi.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.084753790000036, -8.451765029999933]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Toko Pojok Pak Paidi",
+                    "Kategori": "Makanan dan minuman",
+                    "Produk": "Jajanan",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Pojok Pak Paidi.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.084032770000022, -8.453933479999932]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Warung bu Sri Yati",
+                    "Kategori": "Kelontong",
+                    "Produk": "Barang rumahan",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Toko Bu Sri Yati.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.085864233000052, -8.450408226999969]
+                }
+            }, {
+                "type": "Feature",
+                "properties": {
+                    "Name": "Warung kitiran",
+                    "Kategori": "Makanan dan minuman",
+                    "Produk": "Jajanan",
+                    "Dusun": "Sumber Urip",
+                    "Foto": "Warung kitiran.jpg"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [114.075158010000109, -8.460110159999942]
+                }
+            }]
+        };
 
-        function loadUmkmFromApi() {
-            $.getJSON('/api/umkm')
-                .done(function(data) {
-                    console.log('Loaded UMKM from API:', data.features ? data.features.length : 0);
-                    if (data && data.features && data.features.length > 0) {
-                        umkmLayer.addData(data);
-                        layerControl.addOverlay(umkmLayer, '📍 UMKM Barurejo');
-                        umkmLayer.addTo(map);
-                        updateSidebarStats(data);
-                    } else {
-                        console.warn('API UMKM kosong');
-                    }
-                })
-                .fail(function() {
-                    console.error('API UMKM gagal dimuat');
-                });
+        // =============================================
+        // TAMPILKAN DATA UMKM KE PETA
+        // =============================================
+        if (umkmData && umkmData.features && umkmData.features.length > 0) {
+            umkmLayer.addData(umkmData);
+            layerControl.addOverlay(umkmLayer, '📍 UMKM Barurejo');
+            umkmLayer.addTo(map);
+            updateSidebarStats(umkmData);
+            console.log('✅ Berhasil load ' + umkmData.features.length + ' data UMKM dari hardcode!');
+        } else {
+            console.warn('⚠️ Data UMKM hardcode kosong!');
         }
-
-        // Coba muat dari file GeoJSON dulu, jika gagal dari API
-        loadLocalUmkmFile();
 
         // =============================================
         // FUNGSI SIDEBAR
