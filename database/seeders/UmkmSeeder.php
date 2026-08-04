@@ -47,6 +47,6 @@ class UmkmSeeder extends Seeder
             $count++;
         }
 
-        $this->command->info("✅ Berhasil import $count data UMKM!!!");
+        $this->command->info("✅ Berhasil import $count data UMKM!");
     }
 }
