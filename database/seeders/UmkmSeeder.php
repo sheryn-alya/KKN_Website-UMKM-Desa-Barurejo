@@ -9,7 +9,20 @@ class UmkmSeeder extends Seeder
 {
     public function run()
     {
-        $data = file_get_contents(public_path('geojson/merge_umkm_barurejo.geojson'));
+        // Cek apakah data sudah ada
+        if (DB::table('umkm')->count() > 0) {
+            $this->command->info('✅ Data UMKM sudah ada!');
+            return;
+        }
+
+        // Baca file GeoJSON
+        $path = public_path('geojson/merge_umkm_barurejo.geojson');
+        if (!file_exists($path)) {
+            $this->command->error('❌ File GeoJSON tidak ditemukan!');
+            return;
+        }
+
+        $data = file_get_contents($path);
         $json = json_decode($data, true);
 
         $count = 0;
@@ -17,11 +30,9 @@ class UmkmSeeder extends Seeder
             $props = $feature['properties'];
             $coords = $feature['geometry']['coordinates'];
 
-            $kategori = trim($props['Kategori'] ?? '-');
-
             DB::table('umkm')->insert([
                 'nama' => $props['Name'] ?? 'UMKM',
-                'kategori' => $kategori,
+                'kategori' => trim($props['Kategori'] ?? '-'),
                 'deskripsi' => '',
                 'alamat' => '',
                 'kontak' => '',
