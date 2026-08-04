@@ -15,8 +15,8 @@
 
     <style>
         /* ============================================
-               RESET - TANPA SCROLL
-               ============================================ */
+                       RESET - TANPA SCROLL
+                       ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -34,8 +34,8 @@
         }
 
         /* ============================================
-               MAP - PALING BAWAH
-               ============================================ */
+                       MAP - PALING BAWAH
+                       ============================================ */
         #map {
             width: 100vw !important;
             height: 100vh !important;
@@ -46,8 +46,8 @@
         }
 
         /* ============================================
-               NAVBAR - DI ATAS MAP
-               ============================================ */
+                       NAVBAR - DI ATAS MAP
+                       ============================================ */
         .navbar-umkm,
         nav.navbar,
         .navbar,
@@ -57,8 +57,8 @@
         }
 
         /* ============================================
-               KONTROL PETA - DI ATAS NAVBAR
-               ============================================ */
+                       KONTROL PETA - DI ATAS NAVBAR
+                       ============================================ */
         .leaflet-control-container,
         .leaflet-control-container *,
         .leaflet-top,
@@ -85,8 +85,8 @@
         }
 
         /* ============================================
-               SIDEBAR - PALING ATAS
-               ============================================ */
+                       SIDEBAR - PALING ATAS
+                       ============================================ */
         .sidebar-toggle {
             position: fixed !important;
             top: 100px !important;
@@ -156,8 +156,8 @@
         }
 
         /* ============================================
-               SIDEBAR CONTENT
-               ============================================ */
+                       SIDEBAR CONTENT
+                       ============================================ */
         .map-sidebar h4 {
             color: #1E5E0C;
             font-size: 0.95rem;
@@ -297,8 +297,8 @@
         }
 
         /* ============================================
-               POPUP
-               ============================================ */
+                       POPUP
+                       ============================================ */
         .popup-image {
             width: 100%;
             max-height: 150px;
@@ -382,8 +382,8 @@
         }
 
         /* ============================================
-               MINI MAP FIX
-               ============================================ */
+                       MINI MAP FIX
+                       ============================================ */
         .leaflet-control-minimap-toggle-display {
             background-image: none !important;
             background-color: #ffffff !important;
@@ -413,8 +413,8 @@
         }
 
         /* ============================================
-               RESPONSIVE
-               ============================================ */
+                       RESPONSIVE
+                       ============================================ */
         @media (max-width: 768px) {
             .sidebar-toggle {
                 top: auto !important;
@@ -720,15 +720,15 @@
             "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }),
-            "Google Satellite": L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            "Google Satellite": L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
             }),
-            "Google Terrain": L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+            "Google Terrain": L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
             }),
-            "Google Hybrid": L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+            "Google Hybrid": L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
             })
@@ -770,7 +770,7 @@
         // =============================================
         // MINI MAP
         // =============================================
-        var miniMapLayer = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        var miniMapLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
             maxZoom: 13,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
