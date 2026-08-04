@@ -15,8 +15,8 @@
 
     <style>
         /* ============================================
-           RESET - TANPA SCROLL
-           ============================================ */
+               RESET - TANPA SCROLL
+               ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -34,8 +34,8 @@
         }
 
         /* ============================================
-           MAP - PALING BAWAH
-           ============================================ */
+               MAP - PALING BAWAH
+               ============================================ */
         #map {
             width: 100vw !important;
             height: 100vh !important;
@@ -46,8 +46,8 @@
         }
 
         /* ============================================
-           NAVBAR - DI ATAS MAP
-           ============================================ */
+               NAVBAR - DI ATAS MAP
+               ============================================ */
         .navbar-umkm,
         nav.navbar,
         .navbar,
@@ -57,8 +57,8 @@
         }
 
         /* ============================================
-           KONTROL PETA - DI ATAS NAVBAR
-           ============================================ */
+               KONTROL PETA - DI ATAS NAVBAR
+               ============================================ */
         .leaflet-control-container,
         .leaflet-control-container *,
         .leaflet-top,
@@ -85,8 +85,8 @@
         }
 
         /* ============================================
-           SIDEBAR - PALING ATAS
-           ============================================ */
+               SIDEBAR - PALING ATAS
+               ============================================ */
         .sidebar-toggle {
             position: fixed !important;
             top: 100px !important;
@@ -156,8 +156,8 @@
         }
 
         /* ============================================
-           SIDEBAR CONTENT
-           ============================================ */
+               SIDEBAR CONTENT
+               ============================================ */
         .map-sidebar h4 {
             color: #1E5E0C;
             font-size: 0.95rem;
@@ -297,8 +297,8 @@
         }
 
         /* ============================================
-           POPUP
-           ============================================ */
+               POPUP
+               ============================================ */
         .popup-image {
             width: 100%;
             max-height: 150px;
@@ -382,8 +382,8 @@
         }
 
         /* ============================================
-           MINI MAP FIX
-           ============================================ */
+               MINI MAP FIX
+               ============================================ */
         .leaflet-control-minimap-toggle-display {
             background-image: none !important;
             background-color: #ffffff !important;
@@ -413,8 +413,8 @@
         }
 
         /* ============================================
-           RESPONSIVE
-           ============================================ */
+               RESPONSIVE
+               ============================================ */
         @media (max-width: 768px) {
             .sidebar-toggle {
                 top: auto !important;
@@ -1277,15 +1277,108 @@
         // =============================================
         // TAMPILKAN DATA UMKM KE PETA
         // =============================================
-        if (umkmData && umkmData.features && umkmData.features.length > 0) {
-            umkmLayer.addData(umkmData);
-            layerControl.addOverlay(umkmLayer, '📍 UMKM Barurejo');
+        // =============================================
+// LOAD DATA UMKM DARI CSV (LEBIH SIMPLE)
+// =============================================
+function loadUmkmFromCSV() {
+    fetch('{{ asset('public/geojson/umkm_barurejo.csv') }}')
+        .then(response => {
+            if (!response.ok) throw new Error('CSV tidak ditemukan');
+            return response.text();
+        })
+        .then(csvText => {
+            // Parse CSV
+            const lines = csvText.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const features = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim() === '') continue;
+
+                // Handle CSV dengan kutip
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let char of lines[i]) {
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim());
+
+                // Buat object
+                const obj = {};
+                headers.forEach((h, idx) => {
+                    obj[h] = values[idx] || '';
+                });
+
+                // Skip jika koordinat kosong
+                if (!obj.Longitude || !obj.Latitude) continue;
+
+                features.push({
+                    type: 'Feature',
+                    properties: {
+                        Name: obj.Name || 'UMKM',
+                        Kategori: obj.Kategori || '-',
+                        Produk: obj.Produk || '-',
+                        Dusun: obj.Dusun || '-',
+                        Foto: obj.Foto || ''
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [parseFloat(obj.Longitude), parseFloat(obj.Latitude)]
+                    }
+                });
+            }
+
+            const csvData = {
+                type: 'FeatureCollection',
+                features: features
+            };
+
+            console.log('✅ Loaded ' + features.length + ' UMKM from CSV!');
+
+            // Tambahkan ke peta
+            umkmLayer.addData(csvData);
             umkmLayer.addTo(map);
-            updateSidebarStats(umkmData);
-            console.log('✅ Berhasil load ' + umkmData.features.length + ' data UMKM dari hardcode!');
-        } else {
-            console.warn('⚠️ Data UMKM hardcode kosong!');
-        }
+            layerControl.addOverlay(umkmLayer, '📍 UMKM Barurejo');
+            updateSidebarStats(csvData);
+
+            // Zoom ke lokasi pertama
+            if (features.length > 0) {
+                var firstCoord = features[0].geometry.coordinates;
+                map.setView([firstCoord[1], firstCoord[0]], 15);
+            }
+        })
+        .catch(err => {
+            console.error('❌ Error loading CSV:', err);
+            // Fallback ke hardcode
+            loadUmkmHardcode();
+        });
+}
+
+// =============================================
+// FALLBACK: HARDCODE DATA UMKM
+// =============================================
+function loadUmkmHardcode() {
+    var hardcodeData = {
+        "type": "FeatureCollection",
+        "features": [
+            // ... data UMKM hardcode di sini ...
+        ]
+    };
+    umkmLayer.addData(hardcodeData);
+    umkmLayer.addTo(map);
+    updateSidebarStats(hardcodeData);
+    console.log('✅ Fallback: loaded hardcode data');
+}
+// Jalankan load CSV
+loadUmkmFromCSV();
 
         // =============================================
         // FUNGSI SIDEBAR
