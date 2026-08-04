@@ -15,8 +15,8 @@
 
     <style>
         /* ============================================
-                       RESET - TANPA SCROLL
-                       ============================================ */
+                           RESET - TANPA SCROLL
+                           ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -34,8 +34,8 @@
         }
 
         /* ============================================
-                       MAP - PALING BAWAH
-                       ============================================ */
+                           MAP - PALING BAWAH
+                           ============================================ */
         #map {
             width: 100vw !important;
             height: 100vh !important;
@@ -46,8 +46,8 @@
         }
 
         /* ============================================
-                       NAVBAR - DI ATAS MAP
-                       ============================================ */
+                           NAVBAR - DI ATAS MAP
+                           ============================================ */
         .navbar-umkm,
         nav.navbar,
         .navbar,
@@ -57,8 +57,8 @@
         }
 
         /* ============================================
-                       KONTROL PETA - DI ATAS NAVBAR
-                       ============================================ */
+                           KONTROL PETA - DI ATAS NAVBAR
+                           ============================================ */
         .leaflet-control-container,
         .leaflet-control-container *,
         .leaflet-top,
@@ -85,8 +85,8 @@
         }
 
         /* ============================================
-                       SIDEBAR - PALING ATAS
-                       ============================================ */
+                           SIDEBAR - PALING ATAS
+                           ============================================ */
         .sidebar-toggle {
             position: fixed !important;
             top: 100px !important;
@@ -156,8 +156,8 @@
         }
 
         /* ============================================
-                       SIDEBAR CONTENT
-                       ============================================ */
+                           SIDEBAR CONTENT
+                           ============================================ */
         .map-sidebar h4 {
             color: #1E5E0C;
             font-size: 0.95rem;
@@ -297,8 +297,8 @@
         }
 
         /* ============================================
-                       POPUP
-                       ============================================ */
+                           POPUP
+                           ============================================ */
         .popup-image {
             width: 100%;
             max-height: 150px;
@@ -382,8 +382,8 @@
         }
 
         /* ============================================
-                       MINI MAP FIX
-                       ============================================ */
+                           MINI MAP FIX
+                           ============================================ */
         .leaflet-control-minimap-toggle-display {
             background-image: none !important;
             background-color: #ffffff !important;
@@ -413,8 +413,8 @@
         }
 
         /* ============================================
-                       RESPONSIVE
-                       ============================================ */
+                           RESPONSIVE
+                           ============================================ */
         @media (max-width: 768px) {
             .sidebar-toggle {
                 top: auto !important;
@@ -804,7 +804,7 @@
         // =============================================
         // LOAD GEOJSON BATAS DUSUN
         // =============================================
-        fetch('{{ asset('geojson/batas_dusun_barurejo2.geojson') }}')
+        fetch('{{ asset('public/geojson/batas_dusun_barurejo2.geojson') }}')
             .then(response => response.json())
             .then(data => {
                 console.log('Loaded batas_dusun_barurejo2.geojson', data);
@@ -1082,12 +1082,13 @@
                     `;
                     layer.bindPopup(popupHtml);
                     layer.bindTooltip(label);
+                    layer.bindTooltip(label);
                 }
             }
         });
 
         function loadLocalUmkmFile() {
-            fetch('{{ asset('geojson/merge_umkm_barurejo.geojson') }}')
+            fetch('{{ asset('public/geojson/merge_umkm_barurejo.geojson') }}')
                 .then(r => {
                     if (!r.ok) throw new Error('File tidak ditemukan');
                     return r.json();
