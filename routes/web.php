@@ -46,7 +46,6 @@ Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 // ============================================
 // ROUTE CRUD POINT, POLYLINE, POLYGON
 // ============================================
-Route::delete('/points/{id}', [PointsController::class, 'destroy'])->name('points.destroy');
 Route::resource('points', PointsController::class);
 Route::resource('polylines', PolylinesController::class);
 Route::resource('polygons', PolygonsController::class);
