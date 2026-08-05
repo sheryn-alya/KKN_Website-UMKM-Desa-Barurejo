@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PointsController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -38,7 +37,6 @@ Route::middleware('guest')->group(function () {
 });
 
 
-Route::post('/points/store', [PointsController::class, 'store'])->name('points.store');
 Route::get('verify-email', EmailVerificationPromptController::class)
     ->name('verification.notice');
 
