@@ -15,8 +15,8 @@
 
     <style>
         /* ============================================
-           RESET - TANPA SCROLL
-           ============================================ */
+                   RESET - TANPA SCROLL
+                   ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -33,6 +33,9 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        /* ============================================
+                   MAP - PALING BAWAH
+                   ============================================ */
         #map {
             width: 100vw !important;
             height: 100vh !important;
@@ -42,6 +45,9 @@
             z-index: 1 !important;
         }
 
+        /* ============================================
+                   NAVBAR - DI ATAS MAP
+                   ============================================ */
         .navbar-umkm,
         nav.navbar,
         .navbar,
@@ -50,6 +56,9 @@
             position: relative !important;
         }
 
+        /* ============================================
+                   KONTROL PETA - DI ATAS NAVBAR
+                   ============================================ */
         .leaflet-control-container,
         .leaflet-control-container *,
         .leaflet-top,
@@ -75,6 +84,9 @@
             z-index: 2000 !important;
         }
 
+        /* ============================================
+                   SIDEBAR - PALING ATAS
+                   ============================================ */
         .sidebar-toggle {
             position: fixed !important;
             top: 100px !important;
@@ -127,6 +139,8 @@
             opacity: 1 !important;
         }
 
+
+        /* Scrollbar Sidebar */
         .map-sidebar::-webkit-scrollbar {
             width: 4px;
         }
@@ -141,6 +155,9 @@
             border-radius: 10px;
         }
 
+        /* ============================================
+                   SIDEBAR CONTENT
+                   ============================================ */
         .map-sidebar h4 {
             color: #1E5E0C;
             font-size: 0.95rem;
@@ -279,6 +296,9 @@
             background: #e0e0e0;
         }
 
+        /* ============================================
+                   POPUP
+                   ============================================ */
         .popup-image {
             width: 100%;
             max-height: 150px;
@@ -361,6 +381,9 @@
             color: #1a2a1a;
         }
 
+        /* ============================================
+                   MINI MAP FIX
+                   ============================================ */
         .leaflet-control-minimap-toggle-display {
             background-image: none !important;
             background-color: #ffffff !important;
@@ -389,6 +412,9 @@
             box-shadow: none !important;
         }
 
+        /* ============================================
+                   RESPONSIVE
+                   ============================================ */
         @media (max-width: 768px) {
             .sidebar-toggle {
                 top: auto !important;
@@ -460,12 +486,15 @@
         </div>
     @endif
 
+    <!-- MAP -->
     <div id="map"></div>
 
+    <!-- SIDEBAR TOGGLE -->
     <div class="sidebar-toggle" onclick="toggleSidebar()" style="top: 100px !important; right: 25px !important;">
         <i class="fas fa-info-circle me-1"></i> Info Peta
     </div>
 
+    <!-- SIDEBAR -->
     <div id="sidebar" class="map-sidebar">
         <h4><i class="fas fa-layer-group me-2"></i>Keterangan Peta</h4>
         <ul class="legend-list">
@@ -649,8 +678,9 @@
         const initialCenter = [-8.4662599, 114.0999699];
         const initialZoom = 14;
 
+        // Hapus zoomControl: true, nanti kita tambahkan manual
         var map = L.map('map', {
-            zoomControl: false,
+            zoomControl: false, // MATIKAN zoom control bawaan
             scrollWheelZoom: false,
             doubleClickZoom: true,
             boxZoom: true,
@@ -658,10 +688,12 @@
             touchZoom: true
         }).setView(initialCenter, initialZoom);
 
+        // Tambahkan zoom control dengan posisi di bawah
         L.control.zoom({
             position: 'topleft'
         }).addTo(map);
 
+        // Atur posisi zoom control dengan CSS
         setTimeout(function() {
             var zoomControl = document.querySelector('.leaflet-control-zoom');
             if (zoomControl) {
@@ -669,12 +701,14 @@
             }
         }, 100);
 
+        // Hilangkan scroll di map
         map.scrollWheelZoom.disable();
 
         const PUBLIC_IMAGES_BASE = "{{ asset('images') }}";
 
         function getImageUrl(imageName) {
             if (!imageName || imageName === '' || imageName === 'null') return '';
+            // Hapus karakter aneh jika ada
             imageName = imageName.trim();
             return `${PUBLIC_IMAGES_BASE}/${encodeURIComponent(imageName)}`;
         }
@@ -700,8 +734,12 @@
             })
         };
 
+        // Default basemap
         var currentBasemap = baseMaps["OpenStreetMap"].addTo(map);
 
+        // =============================================
+        // LAYER CONTROL - TAMBAHKAN TOMBOL BASEMAP & UMKM
+        // =============================================
         var layerControl = L.control.layers(baseMaps, null, {
             collapsed: false,
             position: 'bottomright'
@@ -732,7 +770,7 @@
         // =============================================
         // MINI MAP
         // =============================================
-        var miniMapLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        var miniMapLayer = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
             maxZoom: 13,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
@@ -766,7 +804,7 @@
         // =============================================
         // LOAD GEOJSON BATAS DUSUN
         // =============================================
-        fetch('{{ asset('public/geojson/batas_dusun_barurejo2.geojson') }}')
+        fetch('{{ asset('geojson/batas_dusun_barurejo2.geojson') }}')
             .then(response => response.json())
             .then(data => {
                 console.log('Loaded batas_dusun_barurejo2.geojson', data);
@@ -848,7 +886,7 @@
         });
 
         // =============================================
-        // LOAD DATA POINT, POLYLINE, POLYGON
+        // LOAD DATA POINT
         // =============================================
         var point = L.geoJson(null, {
             onEachFeature: function(feature, layer) {
@@ -890,6 +928,9 @@
             map.addLayer(point);
         });
 
+        // =============================================
+        // LOAD DATA POLYLINE
+        // =============================================
         var polyline = L.geoJson(null, {
             onEachFeature: function(feature, layer) {
                 var routedelete = "{{ route('polylines.destroy', ':id') }}".replace(':id', feature.properties
@@ -932,6 +973,9 @@
             map.addLayer(polyline);
         });
 
+        // =============================================
+        // LOAD DATA POLYGON
+        // =============================================
         var polygon = L.geoJson(null, {
             onEachFeature: function(feature, layer) {
                 var routedelete = "{{ route('polygons.destroy', ':id') }}".replace(':id', feature.properties
@@ -975,63 +1019,117 @@
         });
 
         // =============================================
-        // DATA UMKM - FORCE LOAD (PASTI JALAN)
+        // LOAD DATA UMKM - DIPERBAIKI
         // =============================================
-        setTimeout(function() {
-            console.log('🔥 FORCE LOAD UMKM...');
-
-            var simpleUmkm = [
-                { nama: "Kolam Pancing Banyumili", lat: -8.474798687, lng: 114.113310520, kategori: "Perikanan" },
-                { nama: "Tiga bersaudara material", lat: -8.472011279, lng: 114.117579604, kategori: "Kerajinan" },
-                { nama: "Ud.Mela", lat: -8.476189710, lng: 114.119032740, kategori: "Kerajinan" },
-                { nama: "Warung tepi ladang", lat: -8.481255365, lng: 114.105565498, kategori: "Minuman" },
-                { nama: "Zha Craft Florist", lat: -8.470250768, lng: 114.114569841, kategori: "Kerajinan" },
-                { nama: "Toko Bu Rohima", lat: -8.449062, lng: 114.085828000, kategori: "Kelontong" },
-                { nama: "Toko Bu Sumarti", lat: -8.449273791, lng: 114.088237460, kategori: "Kelontong" },
-                { nama: "Toko Cahaya Tani", lat: -8.453642778, lng: 114.090258828, kategori: "Pertanian" },
-                { nama: "Toko Dwi Jaya", lat: -8.443856228, lng: 114.088659866, kategori: "Kelontong" },
-                { nama: "Toko Mba Maryam", lat: -8.453531558, lng: 114.089954119, kategori: "Kelontong" },
-                { nama: "Toko Madura Ayang", lat: -8.451765030, lng: 114.084753790, kategori: "Kelontong" },
-                { nama: "Toko Pojok Pak Paidi", lat: -8.453933480, lng: 114.084032770, kategori: "Makanan" },
-                { nama: "Warung bu Sri Yati", lat: -8.450408227, lng: 114.085864233, kategori: "Kelontong" },
-                { nama: "Warung kitiran", lat: -8.460110160, lng: 114.075158010, kategori: "Makanan" }
-            ];
-
-            var colors = {
-                'Perikanan': '#1abc9c',
-                'Kerajinan': '#f39c12',
-                'Minuman': '#00b4d8',
-                'Kelontong': '#6c757d',
-                'Makanan': '#f4a460',
-                'Pertanian': '#2ecc71'
-            };
-
-            simpleUmkm.forEach(function(item) {
-                var color = colors[item.kategori] || '#ff4500';
-                var marker = L.circleMarker([item.lat, item.lng], {
-                    radius: 10,
+        var umkmLayer = L.geoJson(null, {
+            pointToLayer: function(feature, latlng) {
+                var colors = {
+                    'Perikanan': '#1abc9c',
+                    'Kerajinan': '#f39c12',
+                    'Minuman': '#00b4d8',
+                    'Kelontong': '#6c757d',
+                    'Makanan dan minuman': '#f4a460',
+                    'Pertanian': '#2ecc71',
+                    'makanan': '#2ecc71',
+                    'kerajinan': '#f39c12',
+                    'fashion': '#9b59b6',
+                    'jasa': '#3498db'
+                };
+                var kategori = feature.properties.Kategori || feature.properties.kategori || '';
+                var color = colors[kategori] || '#ff4500';
+                return L.circleMarker(latlng, {
+                    radius: 8,
                     fillColor: color,
                     color: '#ffffff',
                     weight: 2,
                     opacity: 1,
                     fillOpacity: 0.9
-                }).addTo(map)
-                .bindPopup('<b>' + item.nama + '</b><br>Kategori: ' + item.kategori);
-                console.log('✅ Marker added: ' + item.nama);
-            });
+                });
+            },
+            onEachFeature: function(feature, layer) {
+                if (feature && feature.properties) {
+                    // Ambil dari properti yang benar (kapitalisasi)
+                    var label = feature.properties.Name || feature.properties.nama || 'UMKM';
+                    var alamat = feature.properties.alamat || feature.properties.Alamat || '-';
+                    var kategori = feature.properties.Kategori || feature.properties.kategori || '-';
+                    var produk = feature.properties.Produk || feature.properties.produk || '-';
+                    var dusun = feature.properties.Dusun || feature.properties.dusun || '-';
+                    var foto = feature.properties.Foto || feature.properties.foto || feature.properties.image;
 
-            // Update statistik sidebar
-            document.getElementById('sidebarTotalUmkm').textContent = simpleUmkm.length;
-            var categories = new Set(simpleUmkm.map(i => i.kategori));
-            document.getElementById('sidebarTotalKategori').textContent = categories.size;
+                    var coords = layer.getLatLng();
+                    var googleMapsUrl = `https://www.google.com/maps?q=${coords.lat},${coords.lng}`;
 
-            // Zoom ke area UMKM
-            if (simpleUmkm.length > 0) {
-                map.setView([simpleUmkm[0].lat, simpleUmkm[0].lng], 14);
+                    // Buat HTML foto jika ada dan bukan null
+                    var imageHtml = '';
+                    if (foto && foto !== '' && foto !== 'null') {
+                        var imageUrl = getImageUrl(foto);
+                        imageHtml =
+                            `<img src="${imageUrl}" onerror="this.style.display='none'" class="popup-image" alt="Foto UMKM" />`;
+                    }
+
+                    var popupHtml = `
+                        <div class="popup-container">
+                            <div class="popup-title">${label}</div>
+                            <div><strong>Alamat:</strong> ${alamat}</div>
+                            <div><strong>Kategori:</strong> ${kategori}</div>
+                            <div><strong>Produk:</strong> ${produk}</div>
+                            <div><strong>Dusun:</strong> ${dusun}</div>
+                            ${imageHtml}
+                            <a href="${googleMapsUrl}" target="_blank" class="popup-btn-google">
+                                <i class="fa-solid fa-map-location-dot"></i> Buka di Google Maps
+                            </a>
+                        </div>
+                    `;
+                    layer.bindPopup(popupHtml);
+                    layer.bindTooltip(label);
+                }
             }
+        });
 
-            console.log('✅ TOTAL ' + simpleUmkm.length + ' UMKM ditampilkan!');
-        }, 2000);
+        function loadLocalUmkmFile() {
+            fetch('{{ asset('geojson/merge_umkm_barurejo.geojson') }}')
+                .then(r => {
+                    if (!r.ok) throw new Error('File tidak ditemukan');
+                    return r.json();
+                })
+                .then(localData => {
+                    console.log('Loaded UMKM from file:', localData.features ? localData.features.length : 0);
+                    if (localData && localData.features && localData.features.length > 0) {
+                        umkmLayer.addData(localData);
+                        layerControl.addOverlay(umkmLayer, '📍 UMKM Barurejo');
+                        umkmLayer.addTo(map);
+                        updateSidebarStats(localData);
+                    } else {
+                        console.warn('File UMKM kosong, coba dari API');
+                        loadUmkmFromApi();
+                    }
+                })
+                .catch(err => {
+                    console.error('Gagal memuat file UMKM:', err);
+                    loadUmkmFromApi();
+                });
+        }
+
+        function loadUmkmFromApi() {
+            $.getJSON('/api/umkm')
+                .done(function(data) {
+                    console.log('Loaded UMKM from API:', data.features ? data.features.length : 0);
+                    if (data && data.features && data.features.length > 0) {
+                        umkmLayer.addData(data);
+                        layerControl.addOverlay(umkmLayer, '📍 UMKM Barurejo');
+                        umkmLayer.addTo(map);
+                        updateSidebarStats(data);
+                    } else {
+                        console.warn('API UMKM kosong');
+                    }
+                })
+                .fail(function() {
+                    console.error('API UMKM gagal dimuat');
+                });
+        }
+
+        // Coba muat dari file GeoJSON dulu, jika gagal dari API
+        loadLocalUmkmFile();
 
         // =============================================
         // FUNGSI SIDEBAR
@@ -1064,16 +1162,20 @@
 
         function updateSidebarStats(data) {
             if (!data || !data.features) return;
+
             var total = data.features.length;
             document.getElementById('sidebarTotalUmkm').textContent = total;
+
             var categories = new Set();
             var dusun = new Set();
+
             data.features.forEach(function(f) {
                 var kategori = f.properties.Kategori || f.properties.kategori;
                 var dusunVal = f.properties.Dusun || f.properties.dusun;
                 if (kategori) categories.add(kategori);
                 if (dusunVal) dusun.add(dusunVal);
             });
+
             document.getElementById('sidebarTotalKategori').textContent = categories.size || 0;
             document.getElementById('sidebarTotalDusun').textContent = dusun.size || 0;
         }

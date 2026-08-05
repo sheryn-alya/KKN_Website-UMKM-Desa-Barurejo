@@ -5,48 +5,38 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class UmkmSeeder extends Seeder
+class UmkmManualSeeder extends Seeder
 {
     public function run()
     {
-        // Cek apakah data sudah ada
-        if (DB::table('umkm')->count() > 0) {
-            $this->command->info('✅ Data UMKM sudah ada!');
-            return;
-        }
+        $data = [
+            ['nama' => 'Kolam Pancing Banyumili', 'kategori' => 'Perikanan', 'latitude' => -8.474798687, 'longitude' => 114.113310520],
+            ['nama' => 'Tiga bersaudara material', 'kategori' => 'Kerajinan', 'latitude' => -8.472011279, 'longitude' => 114.117579604],
+            ['nama' => 'Ud.Mela', 'kategori' => 'Kerajinan', 'latitude' => -8.476189710, 'longitude' => 114.119032740],
+            ['nama' => 'Warung tepi ladang (parno)', 'kategori' => 'Minuman', 'latitude' => -8.481255365, 'longitude' => 114.105565498],
+            ['nama' => 'Zha Craft Florist Hand Made', 'kategori' => 'Kerajinan', 'latitude' => -8.470250768, 'longitude' => 114.114569841],
+            ['nama' => 'Toko Bu Rohima', 'kategori' => 'Kelontong', 'latitude' => -8.449062, 'longitude' => 114.085828000],
+            ['nama' => 'Toko Bu Sumarti', 'kategori' => 'Kelontong', 'latitude' => -8.449273791, 'longitude' => 114.088237460],
+            ['nama' => 'Toko Cahaya Tani Barurejo', 'kategori' => 'Pertanian', 'latitude' => -8.453642778, 'longitude' => 114.090258828],
+            ['nama' => 'Toko Dwi Jaya', 'kategori' => 'Kelontong', 'latitude' => -8.443856228, 'longitude' => 114.088659866],
+            ['nama' => 'Toko Kelontong Mba Maryam', 'kategori' => 'Kelontong', 'latitude' => -8.453531558, 'longitude' => 114.089954119],
+            ['nama' => 'Toko Madura Ayang Cindi', 'kategori' => 'Kelontong', 'latitude' => -8.451765030, 'longitude' => 114.084753790],
+            ['nama' => 'Toko Pojok Pak Paidi', 'kategori' => 'Makanan dan minuman', 'latitude' => -8.453933480, 'longitude' => 114.084032770],
+            ['nama' => 'Warung bu Sri Yati', 'kategori' => 'Kelontong', 'latitude' => -8.450408227, 'longitude' => 114.085864233],
+            ['nama' => 'Warung kitiran', 'kategori' => 'Makanan dan minuman', 'latitude' => -8.460110160, 'longitude' => 114.075158010],
+        ];
 
-        // Baca file GeoJSON
-        $path = public_path('geojson/merge_umkm_barurejo.geojson');
-        if (!file_exists($path)) {
-            $this->command->error('❌ File GeoJSON tidak ditemukan!');
-            return;
-        }
-
-        $data = file_get_contents($path);
-        $json = json_decode($data, true);
-
-        $count = 0;
-        foreach ($json['features'] as $feature) {
-            $props = $feature['properties'];
-            $coords = $feature['geometry']['coordinates'];
-
+        foreach ($data as $item) {
             DB::table('umkm')->insert([
-                'nama' => $props['Name'] ?? 'UMKM',
-                'kategori' => trim($props['Kategori'] ?? '-'),
-                'deskripsi' => '',
-                'alamat' => '',
-                'kontak' => '',
-                'jam_buka' => '',
-                'produk' => json_encode([$props['Produk'] ?? '']),
-                'foto' => $props['Foto'] ?? null,
-                'latitude' => $coords[1],
-                'longitude' => $coords[0],
+                'nama' => $item['nama'],
+                'kategori' => $item['kategori'],
+                'latitude' => $item['latitude'],
+                'longitude' => $item['longitude'],
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-            $count++;
         }
 
-        $this->command->info("✅ Berhasil import $count data UMKM!");
+        $this->command->info('✅ Berhasil menambahkan ' . count($data) . ' data UMKM!');
     }
 }
