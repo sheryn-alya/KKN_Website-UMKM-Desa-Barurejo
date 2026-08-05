@@ -5,17 +5,18 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class UmkmManualSeeder extends Seeder
+class UmkmSeeder extends Seeder
 {
     public function run()
     {
+        // Data UMKM (14 titik)
         $data = [
             ['nama' => 'Kolam Pancing Banyumili', 'kategori' => 'Perikanan', 'latitude' => -8.474798687, 'longitude' => 114.113310520],
             ['nama' => 'Tiga bersaudara material', 'kategori' => 'Kerajinan', 'latitude' => -8.472011279, 'longitude' => 114.117579604],
             ['nama' => 'Ud.Mela', 'kategori' => 'Kerajinan', 'latitude' => -8.476189710, 'longitude' => 114.119032740],
             ['nama' => 'Warung tepi ladang (parno)', 'kategori' => 'Minuman', 'latitude' => -8.481255365, 'longitude' => 114.105565498],
             ['nama' => 'Zha Craft Florist Hand Made', 'kategori' => 'Kerajinan', 'latitude' => -8.470250768, 'longitude' => 114.114569841],
-            ['nama' => 'Toko Bu Rohima', 'kategori' => 'Kelontong', 'latitude' => -8.449062, 'longitude' => 114.085828000],
+            ['nama' => 'Toko Bu Rohima', 'kategori' => 'Kelontong', 'latitude' => -8.449062000, 'longitude' => 114.085828000],
             ['nama' => 'Toko Bu Sumarti', 'kategori' => 'Kelontong', 'latitude' => -8.449273791, 'longitude' => 114.088237460],
             ['nama' => 'Toko Cahaya Tani Barurejo', 'kategori' => 'Pertanian', 'latitude' => -8.453642778, 'longitude' => 114.090258828],
             ['nama' => 'Toko Dwi Jaya', 'kategori' => 'Kelontong', 'latitude' => -8.443856228, 'longitude' => 114.088659866],
@@ -37,6 +38,6 @@ class UmkmManualSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✅ Berhasil menambahkan ' . count($data) . ' data UMKM!');
+        echo "✅ Berhasil import " . count($data) . " data UMKM!\n";
     }
 }
